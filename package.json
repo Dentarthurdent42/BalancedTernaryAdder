@@ -1,0 +1,11 @@
+{
+  "name": "balanced-ternary-adder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/ci-check.mjs"
+  },
+  "devDependencies": {
+    "@babel/standalone": "7.29.0"
+  }
+}
