@@ -55,7 +55,7 @@ exactly the one already implemented in `index.html`:
 
 ```js
 const m = ((Math.round(deg / 60) % 3) + 3) % 3;
-trit = m === 0 ? 0 : m === 1 ? 1 : -1;   // 0 → 0, +1, −1, repeating
+const trit = m === 0 ? 0 : m === 1 ? 1 : -1;   // 0 → 0, +1, −1, repeating
 ```
 
 ---
