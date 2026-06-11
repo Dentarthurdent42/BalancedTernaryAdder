@@ -113,6 +113,15 @@ automatically.
 
 ## 3. The cascade
 
+The diagram below is a **block diagram of the machine — read it right-to-left**.
+It is not a picture of the parts; it shows how motion flows. The hand crank
+(right) drives the units wheel `W0`; each `÷3` arrow is one twin-pin carry
+coupling that turns three counts of one wheel into one count of the next. To see
+the actual parts moving, open **[`counter3d.html`](./counter3d.html)** — an
+interactive 3D simulation where turning the crank propagates through the real
+Geneva linkage and the trits/carries *emerge* from the kinematics (nothing is
+scripted; every wheel angle is solved from the wheel before it).
+
 ```mermaid
 flowchart RL
   IN([hand crank · 1 rev = 1 count]) -->|single pin · 60°/count| W0["W0 · trit 3⁰"]

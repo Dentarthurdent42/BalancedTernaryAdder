@@ -28,6 +28,17 @@ rippling left through the higher digits. 7 wheels, range −1093 … +1093. Step
 
 → [open `counter.html`](./counter.html)
 
+### `counter3d.html` — the 3D interactive simulation
+The same counter as a real-time **kinematic simulation** in 3D (three.js). The
+whole machine is driven by a single degree of freedom — the input crank — and
+every digit wheel's angle is solved from the external 6-slot Geneva transfer of
+the wheel before it. The trit values and the carries are *emergent*, not
+scripted: scrub the crank and watch carries ripple left, with authentic Geneva
+dwell-and-index motion. Orbit/zoom the camera, and pick the number of trits
+(2–7) live.
+
+→ [open `counter3d.html`](./counter3d.html)
+
 ### `DESIGN.md` — the mechanism
 The engineering write-up behind the counter: why a 6-slot Geneva makes a perfect
 trit, the external-Geneva geometry for `n = 6` (`r = 0.5c`, 120° of action /

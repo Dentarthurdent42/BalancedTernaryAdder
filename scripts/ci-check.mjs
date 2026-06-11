@@ -48,6 +48,55 @@ function loadPage(file, capture) {
   return captured;
 }
 
+// Load the *kinematics* half of a `type="module"` page. Strips the bare ES
+// imports and keeps only the code up to the GEOMETRY divider (the Geneva
+// transfer functions are pure — Math only — and self-contained), then captures
+// the named functions. Exercises the shipped sim code, not a copy.
+function loadModuleKinematics(file, capture) {
+  const html = readFileSync(file, 'utf8');
+  const m = html.match(/<script type="module">([\s\S]*?)<\/script>/);
+  if (!m) throw new Error(`${file}: no module script found`);
+  let src = m[1].replace(/^\s*import\s.*$/gm, '');     // drop ES imports
+  const cut = src.indexOf('//  GEOMETRY');
+  if (cut === -1) throw new Error(`${file}: GEOMETRY divider not found`);
+  src = src.slice(0, cut) + `\n;__capture({ ${capture.join(', ')} });`;
+  let captured = null;
+  vm.runInNewContext(src, { __capture: (f) => { captured = f; }, Math, console },
+    { filename: file });
+  if (!captured) throw new Error(`${file}: capture hook never ran`);
+  return captured;
+}
+
+// ---------- counter3d.html : the Geneva kinematic chain ----------
+{
+  const { geneva, rotToTrit, solveWheels } = loadModuleKinematics('counter3d.html',
+    ['geneva', 'rotToTrit', 'solveWheels']);
+
+  // single 6-slot Geneva transfer: 60° index per 360° driver, dwell otherwise
+  assert(geneva(0) === 0, `geneva(0) = ${geneva(0)}`);
+  assert(Math.abs(geneva(360) - 60) < 1e-9, `geneva(360) = ${geneva(360)}`);
+  assert(geneva(60) === 0 && geneva(110) === 0, 'geneva dwells before engagement');
+  assert(Math.abs(geneva(300) - 60) < 1e-9, 'geneva settled after engagement');
+
+  // THE EMERGENT PROPERTY: cranking T turns must reconstruct the integer T,
+  // with carries produced only by the linkage (solveWheels), across full range.
+  const N = 7, MAX = (3 ** N - 1) / 2;
+  let okAll = true;
+  for (let T = -MAX; T <= MAX; T++) {
+    const th = solveWheels(360 * T, N);
+    let V = 0;
+    for (let k = 0; k < N; k++) V += rotToTrit(th[k]) * 3 ** k;
+    if (V !== T) { okAll = false; assert(false, `crank ${T} turns → emergent ${V}`); break; }
+  }
+  assert(okAll, 'emergent count tracks crank turns');
+
+  // higher wheels dwell between carries: W1 holds while W0 has not yet stepped
+  const a = solveWheels(360 * 1.0, N)[1], b = solveWheels(360 * 1.2, N)[1];
+  assert(Math.abs(a - b) < 1e-9, `W1 should dwell across counts 1.0→1.2 (${a}, ${b})`);
+
+  console.log(`counter3d.html: Geneva chain — emergent count over full ±${MAX} range ok`);
+}
+
 // ---------- index.html : the adder ----------
 {
   const { addTrits, tritsToDecimal, rotToTrit } = loadPage('index.html',
