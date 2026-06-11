@@ -335,6 +335,8 @@
       const [hotCarry, setHotCarry] = useState(new Set());
       const carryTimer = useRef(null);
 
+      useEffect(() => () => { if (carryTimer.current) clearTimeout(carryTimer.current); }, []);
+
       const { trits, counts } = decompose(V, N);
 
       // flash any coupler whose carry count changed (a carry/borrow propagated)
