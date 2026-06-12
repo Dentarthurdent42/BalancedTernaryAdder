@@ -1,4 +1,4 @@
-# BalancedTernaryAdder
+# BalancedTernary
 
 Mechanical-flavoured visualisations of **balanced ternary** — the base-3 number
 system where every digit (a *trit*) is one of `{−1, 0, +1}`. Numbers are
